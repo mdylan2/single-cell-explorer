@@ -31,7 +31,7 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8]
         anndata-version: [0.7.6]
-        test-suite: [smoke-test, smoke-test-annotations]
+        test-suite: [smoke-tests, smoke-tests-annotations]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -49,14 +49,14 @@ jobs:
         # 3. install anndata
         pip install anndata==${{ matrix.anndata-version }}
     - name: Tests
-      run: make unit-test ${{ matrix.test-suite }}
+      run: make unit-tests ${{ matrix.tests-suite }}
 
   cellxgene-release-with-anndata-master:
     name: cellxgene release with anndata master
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test-suite: [smoke-test, smoke-test-annotations]
+        test-suite: [smoke-tests, smoke-tests-annotations]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -79,14 +79,14 @@ jobs:
           # 3. install anndata
           pip install git+https://github.com/theislab/anndata
       - name: Tests
-        run: cd cellxgene && make unit-test ${{ matrix.test-suite }}
+        run: cd cellxgene && make unit-tests ${{ matrix.tests-suite }}
 
   cellxgene-main-with-anndata-master:
     name: cellxgene main with anndata master
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test-suite: [smoke-test, smoke-test-annotations]
+        test-suite: [smoke-tests, smoke-tests-annotations]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -104,4 +104,4 @@ jobs:
           make pydist install-dist dev-env
           pip install git+https://github.com/theislab/anndata
       - name: Tests
-        run: cd cellxgene && make unit-test ${{ matrix.test-suite }}
+        run: cd cellxgene && make unit-tests ${{ matrix.tests-suite }}

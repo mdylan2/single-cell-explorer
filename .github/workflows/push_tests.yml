@@ -65,7 +65,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: make pydist install-dist dev-env-server
+        run: make pydist install-dist dev-env-lol
       - name: Unit tests
         run: |
           make unit-test-server

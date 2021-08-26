@@ -2,7 +2,7 @@
 set -e
 
 # start_server_and_test
-# Replicates the basic functionality of the start-server-and-test npm package
+# Replicates the basic functionality of the start-server-and-tests npm package
 # https://www.npmjs.com/package/start-server-and-test
 
 if [[ $# -ne 3 ]]; then

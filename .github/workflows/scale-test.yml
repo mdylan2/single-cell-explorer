@@ -1,4 +1,4 @@
-name: "Scale test cellxgene APIs for initial loading"
+name: "Scale tests cellxgene APIs for initial loading"
 
 on:
   schedule:
