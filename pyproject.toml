@@ -17,7 +17,6 @@ exclude = '''
     | buck-out
     | build
     | dist
-    | backend/server/data_common/fbs/NetEncoding
   )/
 
 )

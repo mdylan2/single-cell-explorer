@@ -13,7 +13,7 @@ setup(
     name="cellxgene",
     version="0.16.0",
     packages=find_packages(),
-    url="https://github.com/chanzuckerberg/cellxgene",
+    url="https://github.com/chanzuckerberg/single-cell-explorer",
     license="MIT",
     author="Chan Zuckerberg Initiative",
     author_email="cellxgene@chanzuckerberg.com",
