@@ -41,10 +41,10 @@ class AppConfigTest(ConfigTests):
 
         expected_config = yaml.load(default_config, Loader=yaml.Loader)
 
-        server_config = app_default_config["lol"]
+        server_config = app_default_config["server"]
         dataset_config = app_default_config["dataset"]
 
-        expected_server_config = expected_config["lol"]
+        expected_server_config = expected_config["server"]
         expected_dataset_config = expected_config["dataset"]
 
         self.assertDictEqual(app_default_config, expected_config)
@@ -106,7 +106,7 @@ class AppConfigTest(ConfigTests):
             configfile = os.path.join(tempdir, "config.yaml")
             with open(configfile, "w") as fconfig:
                 config = """
-                lol:
+                server:
                     app:
                         flask_secret_key: secret
                     multi_dataset:
@@ -156,8 +156,8 @@ class AppConfigTest(ConfigTests):
         config.add_dataroot_config("s1")
         config.add_dataroot_config("s2")
 
-        # tests simple value in lol
-        config.update_single_config_from_path_and_value(["lol", "app", "flask_secret_key"], "mysecret")
+        # tests simple value in server
+        config.update_single_config_from_path_and_value(["server", "app", "flask_secret_key"], "mysecret")
         self.assertEqual(config.server_config.app__flask_secret_key, "mysecret")
 
         # tests simple value in default dataset
@@ -182,8 +182,8 @@ class AppConfigTest(ConfigTests):
                 ["dataset", "does", "not", "exist"],
                 "unknown config parameter at path: '['dataset', 'does', 'not', 'exist']'",
             ),
-            (["does", "not", "exist"], "path must start with 'lol', 'dataset', or 'per_dataset_config'"),
-            ([], "path must start with 'lol', 'dataset', or 'per_dataset_config'"),
+            (["does", "not", "exist"], "path must start with 'server', 'dataset', or 'per_dataset_config'"),
+            ([], "path must start with 'server', 'dataset', or 'per_dataset_config'"),
             (["per_dataset_config"], "missing dataroot when using per_dataset_config: got '['per_dataset_config']'"),
             (
                 ["per_dataset_config", "unknown"],
@@ -205,7 +205,7 @@ class AppConfigTest(ConfigTests):
         # the path leads to a dict config param, set the config parameter to the new value
         config = AppConfig()
         config.update_single_config_from_path_and_value(
-            ["lol", "authentication", "params_oauth", "cookie"], dict(key="mykey1", max_age=100)
+            ["server", "authentication", "params_oauth", "cookie"], dict(key="mykey1", max_age=100)
         )
         self.assertEqual(config.server_config.authentication__params_oauth__cookie, dict(key="mykey1", max_age=100))
 
@@ -213,7 +213,7 @@ class AppConfigTest(ConfigTests):
         config = AppConfig()
         config.server_config.authentication__params_oauth__cookie = dict(key="mykey1", max_age=100)
         config.update_single_config_from_path_and_value(
-            ["lol", "authentication", "params_oauth", "cookie", "httponly"], True,
+            ["server", "authentication", "params_oauth", "cookie", "httponly"], True,
         )
         self.assertEqual(
             config.server_config.authentication__params_oauth__cookie, dict(key="mykey1", max_age=100, httponly=True)

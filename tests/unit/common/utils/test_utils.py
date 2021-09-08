@@ -9,7 +9,7 @@ from tests import PROJECT_ROOT, random_string
 class TestPlugins(unittest.TestCase):
     """ Test plugin import functionality """
 
-    plugins_dir = f"{PROJECT_ROOT}/lol/tests/test_server/unit/plugins"
+    plugins_dir = f"{PROJECT_ROOT}/server/tests/test_server/unit/plugins"
     test_plugin_path = f"{plugins_dir}/foo.py"
     secret = random_string(8)
 
@@ -27,8 +27,8 @@ class TestPlugins(unittest.TestCase):
 
     def test_import_plugins(self):
         self.assertTrue(os.path.isfile(self.test_plugin_path))
-        loaded_modules = import_plugins("lol.tests.test_server.unit.plugins")
+        loaded_modules = import_plugins("server.tests.test_server.unit.plugins")
         # tests that import plugins found the file
-        self.assertEqual(["lol.tests.test_server.unit.plugins.foo"], [ele.__name__ for ele in loaded_modules])
+        self.assertEqual(["server.tests.test_server.unit.plugins.foo"], [ele.__name__ for ele in loaded_modules])
         # tests that the module was properly executed
         self.assertEqual(self.secret, loaded_modules[0].SECRET)

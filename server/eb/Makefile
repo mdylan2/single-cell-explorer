@@ -17,8 +17,8 @@ cwd := $(shell pwd)
 build: clean
 	mkdir artifact.dir; \
 	(cd ../../.. ; \
-	  git ls-files backend/czi_hosted/ | cpio -pdm $(cwd)/artifact.dir ; ); \
-	$(call copy_client_assets,../../../client/build,artifact.dir/backend/czi_hosted) ; \
+	  git ls-files server/ | cpio -pdm $(cwd)/artifact.dir ; ); \
+	$(call copy_client_assets,../../../client/build,artifact.dir/server) ; \
 	set -e ; \
 	cp app.py artifact.dir/application.py; \
 	cp -r ../../../backend/common artifact.dir/backend/common; \

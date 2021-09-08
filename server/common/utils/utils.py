@@ -95,9 +95,9 @@ def jsonify_numpy(data):
 
 def import_plugins(plugin_module):
     """
-    Load optional plugin modules from lol.common.plugins
+    Load optional plugin modules from server.common.plugins
 
-    If you would like to customize cellxgene, you can add submodules to lol.common.plugins before running the app.
+    If you would like to customize cellxgene, you can add submodules to server.common.plugins before running the app.
     This code will import each, loading the code in each. If no plugins are defined, initializing the app continues as
     normal.
     """

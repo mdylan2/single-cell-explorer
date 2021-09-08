@@ -27,7 +27,7 @@ from server import health_check
 from server import path_join, Float32JSONEncoder
 from server import MatrixDataLoader
 
-webbp = Blueprint("webapp", "lol.lol.common.web", template_folder="templates")
+webbp = Blueprint("webapp", "server.server.common.web", template_folder="templates")
 
 ONE_WEEK = 7 * 24 * 60 * 60
 
@@ -213,7 +213,7 @@ def  dataroot_test_index():
 
 
 def dataroot_index():
-    # Handle the base url for the cellxgene lol when running in multi dataset mode
+    # Handle the base url for the cellxgene server when running in multi dataset mode
     config = current_app.app_config
     if not config.server_config.multi_dataset__index:
         abort(HTTPStatus.NOT_FOUND)

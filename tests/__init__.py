@@ -3,7 +3,7 @@ import string
 from os import popen
 
 PROJECT_ROOT = popen("git rev-parse --show-toplevel").read().strip()
-FIXTURES_ROOT = PROJECT_ROOT + "/lol/tests/fixtures"
+FIXTURES_ROOT = PROJECT_ROOT + "/server/tests/fixtures"
 H5AD_FIXTURE = FIXTURES_ROOT + "/pbmc3k-CSC-gz.h5ad"
 
 

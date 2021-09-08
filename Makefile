@@ -2,8 +2,7 @@ include common.mk
 
 BUILDDIR := build
 CLIENTBUILD := $(BUILDDIR)/client
-CZIHOSTEDBUILD := $(BUILDDIR)/backend/czi_hosted
-SERVERBUILD := $(BUILDDIR)/backend/server
+SERVERBUILD := $(BUILDDIR)/server
 CLEANFILES :=  $(BUILDDIR)/ client/build build dist cellxgene.egg-info
 
 PART ?= patch
@@ -23,11 +22,7 @@ clean-client:
 
 .PHONY: clean-server
 clean-server:
-	cd backend/server && $(MAKE) clean
-
-.PHONY: clean-czi-hosted
-clean-czi-hosted:
-	cd backend/czi_hosted && $(MAKE) clean
+	cd server && $(MAKE) clean
 
 # BUILDING PACKAGE
 
@@ -36,8 +31,9 @@ build-client:
 	cd client && $(MAKE) ci build
 
 .PHONY: build
+# TODO brodgers
 build: clean build-client
-	git ls-files backend/server/ | grep -v 'backend/server/test/' | cpio -pdm $(BUILDDIR)
+	git ls-files server/ | grep -v 'backend/server/test/' | cpio -pdm $(BUILDDIR)
 	cp -r client/build/  $(CLIENTBUILD)
 	$(call copy_client_assets,$(CLIENTBUILD),$(SERVERBUILD))
 	cp backend/__init__.py $(BUILDDIR)
@@ -45,63 +41,32 @@ build: clean build-client
 	cp -r backend/common $(BUILDDIR)/backend/common
 	cp MANIFEST.in README.md setup.cfg setup.py $(BUILDDIR)
 
-.PHONY: build-czi-hosted
-build-czi-hosted: clean build-client
-	git ls-files backend/czi_hosted/ | grep -v 'backend/czi_hosted/test/' | cpio -pdm $(BUILDDIR)
-	cp -r client/build/  $(CLIENTBUILD)
-	$(call copy_client_assets,$(CLIENTBUILD),$(CZIHOSTEDBUILD))
-	cp -r backend/common $(BUILDDIR)/backend/common
-	cp backend/__init__.py $(BUILDDIR)
-	cp backend/__init__.py $(BUILDDIR)/backend
-	cp MANIFEST_hosted.in README.md setup.cfg setup_hosted.py $(BUILDDIR)
-	mv $(BUILDDIR)/setup_hosted.py $(BUILDDIR)/setup.py
-	mv $(BUILDDIR)/MANIFEST_hosted.in $(BUILDDIR)/MANIFEST.in
-
 # If you are actively developing in the server folder use this, dirties the source tree
 .PHONY: build-for-server-dev
 build-for-server-dev: clean-server build-client
-	$(call copy_client_assets,client/build,backend/server)
-
-.PHONY: build-for-czi-hosted-dev
-build-for-czi-hosted-dev: clean-czi-hosted build-client
-	$(call copy_client_assets,client/build,backend/czi_hosted)
+	$(call copy_client_assets,client/build,server)
 
 .PHONY: copy-client-assets
 copy-client-assets:
-	$(call copy_client_assets,client/build,backend/server)
-
-.PHONY: copy-client-assets-czi-hosted
-copy-client-assets-czi-hosted:
-	$(call copy_client_assets,client/build,backend/czi_hosted)
+	$(call copy_client_assets,client/build,server)
 
 # TESTING
 .PHONY: test
 test: unit-test smoke-test
 
 .PHONY: unit-test
-unit-test: unit-test-server unit-test-client unit-test-common
+unit-test: unit-test-server unit-test-client
 
 .PHONY: test-server
 test-server: unit-test-server smoke-test
-
-.PHONY: test-czi-hosted
-test-czi-hosted: unit-test-czi-hosted smoke-test
 
 .PHONY: unit-test-client
 unit-test-client:
 	cd client && $(MAKE) unit-test
 
-.PHONY: unit-test-czi-hosted
-unit-test-czi-hosted:
-	cd backend/czi_hosted && $(MAKE) unit-test
-
 .PHONY: unit-test-server
 unit-test-server:
-	cd backend/server && $(MAKE) unit-test
-
-.PHONY: unit-test-common
-unit-test-common:
-	cd backend/common && $(MAKE) unit-test
+	cd server && $(MAKE) unit-test
 
 .PHONY: smoke-test
 smoke-test:
@@ -113,7 +78,7 @@ smoke-test-annotations:
 
 .PHONY: test-db
 test-db:
-	cd backend/czi_hosted && $(MAKE) test-db
+	cd server && $(MAKE) test-db
 
 # FORMATTING CODE
 
@@ -129,18 +94,11 @@ fmt-py:
 	black .
 
 .PHONY: lint
-lint: lint-servers lint-client
-
-.PHONY: lint-servers
-lint-servers: lint-server lint-czi-hosted-server
+lint: lint-server lint-client
 
 .PHONY: lint-server
 lint-server: fmt-py
-	flake8 backend/server --per-file-ignores='backend/test/fixtures/dataset_config_outline.py:F821 backend/test/fixtures/server_config_outline.py:F821 backend/server/test/performance/scale_test_annotations.py:E501'
-
-.PHONY: lint-czi-hosted-server
-lint-czi-hosted-server: fmt-py
-	flake8 backend/czi_hosted --per-file-ignores='backend/test/fixtures/czi_hosted_dataset_config_outline.py:F821 backend/test/fixtures/czi_hosted_server_config_outline.py:F821 backend/test/performance/scale_test_annotations.py:E501'
+	flake8 server --per-file-ignores='tests/fixtures/dataset_config_outline.py:F821 tests/fixtures/server_config_outline.py:F821 tests/performance/scale_test_annotations.py:E501'
 
 .PHONY: lint-client
 lint-client:
@@ -152,12 +110,6 @@ lint-client:
 pydist: build
 	cd $(BUILDDIR); python setup.py sdist -d ../dist
 	@echo "done"
-
-.PHONY: pydist-czi-hosted
-pydist-czi-hosted: build-czi-hosted
-	cd $(BUILDDIR); python setup.py sdist -d ../dist
-	@echo "done"
-
 
 # RELEASE HELPERS
 
@@ -206,11 +158,8 @@ dev-env-client:
 
 .PHONY: dev-env-server
 dev-env-server:
-	pip install -r backend/server/requirements-dev.txt
+	pip install -r server/requirements-dev.txt
 
-.PHONY: dev-env-czi-hosted
-dev-env-czi-hosted:
-	pip install -r backend/czi_hosted/requirements-dev.txt
 # Set PART=[major, minor, patch] as param to make bump.
 # This will create a release candidate. (i.e. 0.16.1 -> 0.16.2-rc.0 for a patch bump)
 .PHONY: bump-version

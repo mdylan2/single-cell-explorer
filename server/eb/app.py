@@ -28,7 +28,7 @@ try:
     from server import Server
     from server import DataLocator, discover_s3_region_name
 except Exception:
-    logging.critical("Exception importing lol modules", exc_info=True)
+    logging.critical("Exception importing server modules", exc_info=True)
     sys.exit(1)
 
 
@@ -52,7 +52,7 @@ class WSGIServer(Server):
         # `client/configuration/webpack/obsoleteHTMLTemplate.html`
 
         # It is _very_ difficult to generate the correct hash manually,
-        # consider forcing CSP to fail on the local lol by intercepting the response via Requestly
+        # consider forcing CSP to fail on the local server by intercepting the response via Requestly
         # this should print the failing script's hash to console.
         # See more here: https://github.com/chanzuckerberg/cellxgene/pull/1745
         obsolete_browser_script_hash = ["'sha256-/rmgOi/skq9MpiZxPv6lPb1PNSN+Uf4NaUHO/IjyfwM='"]
@@ -178,9 +178,9 @@ except Exception:
     sys.exit(1)
 
 if app_config.is_multi_dataset():
-    logging.info(f"starting lol with multi_dataset__dataroot={app_config.server_config.multi_dataset__dataroot}")
+    logging.info(f"starting server with multi_dataset__dataroot={app_config.server_config.multi_dataset__dataroot}")
 else:
-    logging.info(f"starting lol with single_dataset__datapath={app_config.server_config.single_dataset__datapath}")
+    logging.info(f"starting server with single_dataset__datapath={app_config.server_config.single_dataset__datapath}")
 
 if __name__ == "__main__":
     try:

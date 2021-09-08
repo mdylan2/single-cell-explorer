@@ -45,7 +45,7 @@ class TestDatasetConfig(ConfigTests):
         self.assertEqual(config.default_dataset_config.user_annotations__type, "local_file_csv")
         self.assertEqual(config.default_dataset_config.diffexp__lfc_cutoff, 0.01)
 
-    @patch("lol.lol.common.config.dataset_config.BaseConfig.validate_correct_type_of_configuration_attribute")
+    @patch("server.server.common.config.dataset_config.BaseConfig.validate_correct_type_of_configuration_attribute")
     def test_complete_config_checks_all_attr(self, mock_check_attrs):
         mock_check_attrs.side_effect = BaseConfig.validate_correct_type_of_configuration_attribute()
         self.dataset_config.complete_config(self.context)
@@ -92,7 +92,7 @@ class TestDatasetConfig(ConfigTests):
 
         self.assertEqual(self.context["messages"], ["Warning: db_uri ignored as annotations are disabled."])
 
-    @patch("lol.lol.common.config.dataset_config.DbUtils")
+    @patch("server.server.common.config.dataset_config.DbUtils")
     def test_handle_user_annotations__instantiates_user_annotations_class_correctly(self, mock_db_utils):
         mock_db_utils.return_value = "123"
         config = self.get_config(
@@ -218,7 +218,7 @@ class TestDatasetConfig(ConfigTests):
             configfile = os.path.join(tempdir, "config.yaml")
             with open(configfile, "w") as fconfig:
                 config = """
-                lol:
+                server:
                     multi_dataset:
                         dataroot:
                             tests:
