@@ -163,6 +163,36 @@ def rest_get_data_adaptor(func):
     return wrapped_function
 
 
+########################################################################
+# ETAG PSEUDOCODE
+########################################################################
+def header_etag(func):
+    @wraps(func)
+    def wrapped_function(self, dataset=None):
+        # TODO: Get etag from request header
+        req_etag_value = request.headers.get("ETag")
+
+        # Need dataset S3 URI UUID. Will this be from get_data_adaptor?
+        s3_uri =  .... get_data_adaptor()['s3_uri']
+        s3_uri_hashed = hashlib.sha256(s3_uri.encode()).hexdigest()
+
+        # TODO: Will this check be done by CloudFront??
+        # TODO: If etag value IS the same as the hash(dataset s3 URI UUID), return empty response with 304?
+        if req_etag_value == s3_uri_hashed:
+            # But if you respond with 304 and no data, how does CloudFront know to respond with the cached data?
+            return '', HTTPStatus.NOT_MODIFIED
+        
+        # TODO: If etag value IS NOT the same as the hash(dataset s3 URI UUID), return response with 200. Set new etag.
+        else:
+            response = make_response(func(dataset))
+            response.set_etag(s3_uri_hashed)
+            return response
+        
+    return wrapped_function
+
+########################################################################
+
+
 def dataroot_test_index():
     # the following index page is meant for testing/debugging purposes
     data = '<!doctype html><html lang="en">'
@@ -239,7 +269,7 @@ class DatasetMetadataAPI(DatasetResource):
 
 
 class ConfigAPI(DatasetResource):
-    @cache_control(public=True, max_age=ONE_WEEK)
+    @cache_control(public=True, max_age=0)
     @rest_get_data_adaptor
     def get(self, data_adaptor):
         return common_rest.config_get(current_app.app_config, data_adaptor)
