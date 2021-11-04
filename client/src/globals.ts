@@ -139,6 +139,9 @@ export const maxGenes = 100;
 export const diffexpPopNamePrefix1 = "Pop1 high";
 export const diffexpPopNamePrefix2 = "Pop2 high";
 
+/* Maximum number of menu items displayable in menu before scroll is enabled */
+export const maxMenuItemCount = 9;
+
 /* various timing-related behaviors */
 export const tooltipHoverOpenDelay = 1000; /* ms delay before a tooltip displays */
 export const tooltipHoverOpenDelayQuick = 500;
@@ -153,10 +156,10 @@ if ((window as any).CELLXGENE && (window as any).CELLXGENE.API) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any --- FIXME: disabled temporarily on migrate to TS.
   _API = (window as any).CELLXGENE.API;
 } else if (CXG_SERVER_PORT === undefined) {
-    const errorMessage = "Please set the CXG_SERVER_PORT environment variable.";
-    dispatchNetworkErrorMessageToUser(errorMessage);
-    throw new Error(errorMessage);
-  }
+  const errorMessage = "Please set the CXG_SERVER_PORT environment variable.";
+  dispatchNetworkErrorMessageToUser(errorMessage);
+  throw new Error(errorMessage);
+}
 
 export const API = _API;
 
